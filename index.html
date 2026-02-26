@@ -1,27 +1,317 @@
-<!DOCTYPE html>
-<html lang="es-ES">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<!doctype html>
+<html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<title>isalgadog</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>isalgadog</title>
+  <meta name="description" content="Iván Salgado — linguist in tech. Contact + links." />
+  <style>
+    :root{
+      --bg: #5CDB95;
+      --ink: #05386B;
+      --card: rgba(255,255,255,.78);
+      --cardBorder: rgba(5,56,107,.18);
+      --shadow: 0 18px 50px rgba(5,56,107,.18);
+      --radius: 22px;
+      --btn: rgba(5,56,107,.10);
+      --btnHover: rgba(5,56,107,.16);
+      --focus: #05386B;
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      min-height: 100svh;
+      font-family: "Gill Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(1200px 900px at 20% 10%, rgba(255,255,255,.35), transparent 60%),
+                  radial-gradient(900px 700px at 90% 30%, rgba(5,56,107,.18), transparent 55%),
+                  var(--bg);
+      display:grid;
+      place-items:center;
+      padding: 28px 16px;
+      overflow-x:hidden;
+    }
+
+    /* Animated blob background */
+    .blob{
+      position: fixed;
+      inset: -180px -220px auto auto;
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(255,255,255,.05) 55%, transparent 70%),
+                  radial-gradient(circle at 70% 70%, rgba(5,56,107,.22), rgba(5,56,107,0) 60%);
+      filter: blur(0px);
+      border-radius: 38% 62% 63% 37% / 40% 40% 60% 60%;
+      animation: blob 12s ease-in-out infinite;
+      pointer-events:none;
+      opacity:.9;
+    }
+
+    @keyframes blob{
+      0%   { transform: translate(0,0) rotate(0deg) scale(1);   border-radius: 38% 62% 63% 37% / 40% 40% 60% 60%; }
+      33%  { transform: translate(-70px,60px) rotate(8deg) scale(1.04); border-radius: 58% 42% 36% 64% / 44% 63% 37% 56%; }
+      66%  { transform: translate(-30px,-40px) rotate(-6deg) scale(.98); border-radius: 42% 58% 62% 38% / 62% 43% 57% 38%; }
+      100% { transform: translate(0,0) rotate(0deg) scale(1);   border-radius: 38% 62% 63% 37% / 40% 40% 60% 60%; }
+    }
+
+    .card{
+      width: min(760px, 100%);
+      background: var(--card);
+      border: 1px solid var(--cardBorder);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 26px 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    .top{
+      display:flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .avatar{
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(5,56,107,.85), rgba(5,56,107,.35));
+      display:grid;
+      place-items:center;
+      color: white;
+      font-weight: 700;
+      letter-spacing: .5px;
+      box-shadow: 0 10px 30px rgba(5,56,107,.22);
+      user-select:none;
+    }
+
+    h1{
+      margin:0;
+      font-size: clamp(24px, 4vw, 34px);
+      line-height: 1.1;
+    }
+
+    .tagline{
+      margin: 6px 0 0;
+      font-size: 16px;
+      opacity: .9;
+    }
+
+    .nameBtn{
+      all: unset;
+      cursor: pointer;
+      display:inline-block;
+      border-radius: 12px;
+      padding: 2px 6px;
+    }
+    .nameBtn:hover{ background: rgba(5,56,107,.08); }
+    .nameBtn:focus-visible{
+      outline: 3px solid rgba(5,56,107,.35);
+      outline-offset: 3px;
+    }
+
+    .content{
+      margin-top: 16px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 720px){
+      .content{ grid-template-columns: 1fr; }
+    }
+
+    .about{
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(5,56,107,.10);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .about p{
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .chip{
+      font-size: 13px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(5,56,107,.08);
+      border: 1px solid rgba(5,56,107,.10);
+    }
+
+    .links{
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(5,56,107,.10);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .links h2{
+      margin: 0 0 12px;
+      font-size: 16px;
+      letter-spacing: .2px;
+      text-transform: uppercase;
+      opacity: .85;
+    }
+
+    .btns{
+      display:grid;
+      gap: 10px;
+    }
+
+    a.btn{
+      text-decoration:none;
+      color: var(--ink);
+      background: var(--btn);
+      border: 1px solid rgba(5,56,107,.14);
+      padding: 12px 12px;
+      border-radius: 14px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: transform .12s ease, background .12s ease;
+    }
+    a.btn:hover{
+      background: var(--btnHover);
+      transform: translateY(-1px);
+    }
+    a.btn:focus-visible{
+      outline: 3px solid rgba(5,56,107,.35);
+      outline-offset: 3px;
+    }
+
+    .mini{
+      font-size: 12px;
+      opacity: .75;
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+
+    .footer{
+      margin-top: 14px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      opacity: .85;
+      font-size: 13px;
+    }
+
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(5,56,107,.55);
+      display:inline-block;
+      margin-right: 8px;
+      position: relative;
+      top: -1px;
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .blob{ animation: none; }
+      a.btn{ transition: none; }
+    }
+  </style>
 </head>
 
-<body bgcolor=#5CDB95>
-	<h1 style=
-	"font-size:30px;
-	font-family: Gill Sans, sans-serif"
-	>
-		About me</h1>
-	<p style=
-	"font-size:20px;
-	color:#05386B;
-	font-family: Gill Sans, sans-serif";
-	>
-		Hey!<br><br>
-		I&#8217;m Iván, Mexican, linguist, working since 2016 in the IT industry.<br><br>
-		Contact me:<br>
-		👉🏻 <a href="https://www.linkedin.com/in/isalgadog/">LinkedIn</a><br>
-		👉🏻 facebook.com/isalgadog<br>
-		✉️&nbsp;ivan [at] isalgadog [.] net</p>
+<body>
+  <div class="blob" aria-hidden="true"></div>
+
+  <main class="card" role="main">
+    <section class="top">
+      <div class="avatar" aria-hidden="true">IS</div>
+      <div>
+        <h1>
+          <button class="nameBtn" id="nameBtn" type="button" aria-label="Cambiar tagline">
+            Iván Salgado
+          </button>
+        </h1>
+        <p class="tagline" id="tagline">
+          Linguist → Tech (since 2016). Mexico City. Building useful things.
+        </p>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="about">
+        <p>
+          Hey! I’m Iván — Mexican linguist working in the IT industry since 2016.
+          I like language, product, and systems that feel human.
+        </p>
+
+        <div class="chips" aria-label="Intereses">
+          <span class="chip">NLP</span>
+          <span class="chip">Conversational AI</span>
+          <span class="chip">Product</span>
+          <span class="chip">Linguistics</span>
+          <span class="chip">CDMX</span>
+        </div>
+      </div>
+
+      <aside class="links">
+        <h2>Contact</h2>
+
+        <div class="btns">
+          <a class="btn" href="https://www.linkedin.com/in/isalgadog/" target="_blank" rel="noreferrer">
+            <span>👉🏻 LinkedIn</span><span>↗</span>
+          </a>
+
+          <a class="btn" href="https://facebook.com/isalgadog" target="_blank" rel="noreferrer">
+            <span>👉🏻 Facebook</span><span>↗</span>
+          </a>
+
+          <a class="btn" href="mailto:ivan@isalgadog.net">
+            <span>✉️ ivan@isalgadog.net</span><span>→</span>
+          </a>
+        </div>
+
+        <p class="mini">
+          Tip: click my name for a tiny easter egg.
+        </p>
+      </aside>
+    </section>
+
+    <div class="footer">
+      <div><span class="dot"></span><span id="status">Available for cool conversations.</span></div>
+      <div>© <span id="year"></span> isalgadog</div>
+    </div>
+  </main>
+
+  <script>
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Easter egg tagline rotator
+    const taglines = [
+      "Linguist → Tech (since 2016). Mexico City. Building useful things.",
+      "I turn messy language into clean product decisions.",
+      "Words, systems, and a bit of chaos management.",
+      "Mexican. Linguist. IT since 2016. Still curious.",
+      "If it’s human + digital, I’m probably into it."
+    ];
+    let i = 0;
+
+    const taglineEl = document.getElementById("tagline");
+    document.getElementById("nameBtn").addEventListener("click", () => {
+      i = (i + 1) % taglines.length;
+      taglineEl.textContent = taglines[i];
+    });
+  </script>
 </body>
 </html>
