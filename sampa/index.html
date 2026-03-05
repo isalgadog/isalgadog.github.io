@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>es-MX → SAMPA | isalgadog</title>
+  <meta name="description" content="Transcriptor fonológico es-MX a SAMPA." />
+  <style>
+    :root{
+      --bg: #5CDB95;
+      --ink: #05386B;
+      --card: rgba(255,255,255,.82);
+      --cardBorder: rgba(5,56,107,.18);
+      --shadow: 0 18px 50px rgba(5,56,107,.18);
+      --radius: 22px;
+      --btn: #05386B;
+      --btnHover: #0b4f93;
+      --inputBg: rgba(255,255,255,.9);
+      --danger: #8a1f2b;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100svh;
+      font-family:"Gill Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color:var(--ink);
+      background: radial-gradient(1200px 900px at 20% 10%, rgba(255,255,255,.35), transparent 60%),
+                  radial-gradient(900px 700px at 90% 30%, rgba(5,56,107,.18), transparent 55%),
+                  var(--bg);
+      display:grid;
+      place-items:center;
+      padding: 28px 16px;
+    }
+
+    .card{
+      width:min(760px,100%);
+      background:var(--card);
+      border:1px solid var(--cardBorder);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      padding:26px 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    a.back{
+      color:var(--ink);
+      text-decoration:none;
+      font-size:14px;
+      opacity:.9;
+    }
+
+    h1{ margin:8px 0 0; font-size:clamp(24px,4vw,34px); }
+    .subtitle{ margin:8px 0 0; opacity:.9; }
+
+    .panel{
+      margin-top:18px;
+      display:grid;
+      gap:10px;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+    }
+
+    @media (max-width:640px){ .row{ grid-template-columns:1fr; } }
+
+    input[type="text"]{
+      width:100%;
+      border:1px solid rgba(5,56,107,.2);
+      background:var(--inputBg);
+      border-radius:14px;
+      color:var(--ink);
+      font-size:17px;
+      padding:12px 14px;
+      outline:none;
+    }
+
+    input[type="text"]:focus{
+      border-color: rgba(5,56,107,.5);
+      box-shadow: 0 0 0 3px rgba(5,56,107,.16);
+    }
+
+    button{
+      border:none;
+      background:var(--btn);
+      color:#fff;
+      border-radius:14px;
+      font-size:15px;
+      font-weight:600;
+      padding:12px 16px;
+      cursor:pointer;
+    }
+    button:hover{ background:var(--btnHover); }
+
+    .result{
+      margin-top:14px;
+      border:1px solid rgba(5,56,107,.15);
+      border-radius:14px;
+      background:rgba(255,255,255,.6);
+      padding:14px;
+      min-height:78px;
+    }
+
+    .label{ margin:0 0 8px; font-size:12px; opacity:.75; text-transform:uppercase; }
+    .phon{ font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:28px; }
+    .error{ color:var(--danger); font-weight:600; }
+
+    .hint{ margin-top:10px; font-size:13px; opacity:.8; }
+    .footer{ margin-top:16px; font-size:12px; opacity:.7; }
+    code{ background:rgba(5,56,107,.08); padding:2px 6px; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <div class="topbar">
+      <a class="back" href="/">← Volver a inicio</a>
+      <span>isalgadog.net</span>
+    </div>
+
+    <h1>es-MX → SAMPA</h1>
+    <p class="subtitle">Transcriptor fonológico (palabra única).</p>
+
+    <section class="panel">
+      <div class="row">
+        <input id="wordInput" type="text" placeholder="Escribe una palabra (ej. cuitláhuac)" autocomplete="off" />
+        <button id="goBtn" type="button">Transcribir</button>
+      </div>
+
+      <div class="result" aria-live="polite">
+        <p class="label">Resultado</p>
+        <div id="resultText" class="phon">—</div>
+      </div>
+
+      <p class="hint">Configura la URL del backend en <code>API_BASE</code> dentro de este archivo.</p>
+    </section>
+
+    <p class="footer">Frontend estático en GitHub Pages + API Flask en subdominio/VPS.</p>
+  </main>
+
+  <script>
+    // TODO: set this to your deployed Flask API origin, e.g. https://api.isalgadog.net
+    const API_BASE = "http://127.0.0.1:5000";
+
+    const input = document.getElementById("wordInput");
+    const btn = document.getElementById("goBtn");
+    const resultText = document.getElementById("resultText");
+
+    async function transcribe() {
+      const word = input.value.trim();
+      if (!word) {
+        resultText.textContent = "Escribe una palabra.";
+        resultText.className = "error";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Transcribiendo...";
+      resultText.textContent = "…";
+      resultText.className = "phon";
+
+      try {
+        const res = await fetch(`${API_BASE}/api/transcribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ word })
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+        if (!data || typeof data.transcription !== "string") {
+          throw new Error("Invalid response shape");
+        }
+
+        resultText.textContent = data.transcription || "(vacío)";
+        resultText.className = "phon";
+      } catch (err) {
+        resultText.textContent = "No pude conectar con el servicio de transcripción.";
+        resultText.className = "error";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Transcribir";
+      }
+    }
+
+    btn.addEventListener("click", transcribe);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") transcribe();
+    });
+  </script>
+</body>
+</html>
