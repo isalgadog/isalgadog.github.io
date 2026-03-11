@@ -7,15 +7,19 @@
   <meta name="description" content="Iván Salgado — linguist in tech. Contact + links." />
   <style>
     :root{
-      --bg: #5CDB95;
-      --ink: #05386B;
-      --card: rgba(255,255,255,.78);
-      --cardBorder: rgba(5,56,107,.18);
-      --shadow: 0 18px 50px rgba(5,56,107,.18);
+      --bg: #D9CBB8;
+      --ink: #305F72;
+      --neutral: #A6A2A0;
+      --card: rgba(255, 250, 244, .86);
+      --cardBorder: rgba(166,162,160,.34);
+      --shadow: 0 18px 50px rgba(48,95,114,.18);
       --radius: 22px;
-      --btn: rgba(5,56,107,.10);
-      --btnHover: rgba(5,56,107,.16);
-      --focus: #05386B;
+      --btn: #3C7D3E;
+      --btnHover: #346e36;
+      --focus: #3FB8AF;
+      --highlight: #E4A82D;
+      --alert: #D94F45;
+      --chip: rgba(63,184,175,.14);
     }
 
     *{ box-sizing: border-box; }
@@ -24,9 +28,9 @@
       min-height: 100svh;
       font-family: "Gill Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       color: var(--ink);
-      background: radial-gradient(1200px 900px at 20% 10%, rgba(255,255,255,.35), transparent 60%),
-                  radial-gradient(900px 700px at 90% 30%, rgba(5,56,107,.18), transparent 55%),
-                  var(--bg);
+      background: radial-gradient(1200px 900px at 20% 10%, rgba(255,255,255,.30), transparent 60%),
+                  radial-gradient(900px 700px at 90% 30%, rgba(48,95,114,.16), transparent 55%),
+                  linear-gradient(160deg, #D9CBB8 0%, #e3d8c8 52%, #d5c2ab 100%);
       display:grid;
       place-items:center;
       padding: 28px 16px;
@@ -39,8 +43,8 @@
       inset: -180px -220px auto auto;
       width: 520px;
       height: 520px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(255,255,255,.05) 55%, transparent 70%),
-                  radial-gradient(circle at 70% 70%, rgba(5,56,107,.22), rgba(5,56,107,0) 60%);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.50), rgba(255,255,255,.05) 55%, transparent 70%),
+                  radial-gradient(circle at 70% 70%, rgba(48,95,114,.20), rgba(48,95,114,0) 60%);
       filter: blur(0px);
       border-radius: 38% 62% 63% 37% / 40% 40% 60% 60%;
       animation: blob 12s ease-in-out infinite;
@@ -78,26 +82,47 @@
       width: 60px;
       height: 60px;
       border-radius: 18px;
-      background: linear-gradient(135deg, rgba(5,56,107,.85), rgba(5,56,107,.35));
+      background: linear-gradient(135deg, rgba(48,95,114,.95), rgba(60,125,62,.85));
       display:grid;
       place-items:center;
       color: white;
       font-weight: 700;
       letter-spacing: .5px;
-      box-shadow: 0 10px 30px rgba(5,56,107,.22);
+      box-shadow: 0 10px 30px rgba(48,95,114,.24);
       user-select:none;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .avatar img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
+    }
+
+    .avatarFallback{
+      position: absolute;
+      inset: 0;
+      display:grid;
+      place-items:center;
+    }
+
+    .avatar.hasImage .avatarFallback{
+      display:none;
     }
 
     h1{
       margin:0;
       font-size: clamp(24px, 4vw, 34px);
       line-height: 1.1;
+      color: var(--ink);
     }
 
     .tagline{
       margin: 6px 0 0;
       font-size: 16px;
-      opacity: .9;
+      color: color-mix(in srgb, var(--ink) 78%, var(--neutral));
     }
 
     .nameBtn{
@@ -107,9 +132,9 @@
       border-radius: 12px;
       padding: 2px 6px;
     }
-    .nameBtn:hover{ background: rgba(5,56,107,.08); }
+    .nameBtn:hover{ background: rgba(63,184,175,.14); }
     .nameBtn:focus-visible{
-      outline: 3px solid rgba(5,56,107,.35);
+      outline: 3px solid rgba(63,184,175,.42);
       outline-offset: 3px;
     }
 
@@ -126,7 +151,7 @@
 
     .about{
       background: rgba(255,255,255,.55);
-      border: 1px solid rgba(5,56,107,.10);
+      border: 1px solid rgba(166,162,160,.36);
       border-radius: 18px;
       padding: 16px;
     }
@@ -147,13 +172,14 @@
       font-size: 13px;
       padding: 7px 10px;
       border-radius: 999px;
-      background: rgba(5,56,107,.08);
-      border: 1px solid rgba(5,56,107,.10);
+      background: var(--chip);
+      border: 1px solid rgba(63,184,175,.3);
+      color: #2d6f6a;
     }
 
     .links{
       background: rgba(255,255,255,.55);
-      border: 1px solid rgba(5,56,107,.10);
+      border: 1px solid rgba(166,162,160,.36);
       border-radius: 18px;
       padding: 16px;
     }
@@ -163,7 +189,8 @@
       font-size: 16px;
       letter-spacing: .2px;
       text-transform: uppercase;
-      opacity: .85;
+      color: var(--ink);
+      opacity: .9;
     }
 
     .btns{
@@ -173,9 +200,9 @@
 
     a.btn{
       text-decoration:none;
-      color: var(--ink);
+      color: #fff;
       background: var(--btn);
-      border: 1px solid rgba(5,56,107,.14);
+      border: 1px solid rgba(60,125,62,.85);
       padding: 12px 12px;
       border-radius: 14px;
       display:flex;
@@ -189,13 +216,13 @@
       transform: translateY(-1px);
     }
     a.btn:focus-visible{
-      outline: 3px solid rgba(5,56,107,.35);
+      outline: 3px solid rgba(63,184,175,.45);
       outline-offset: 3px;
     }
 
     .mini{
       font-size: 12px;
-      opacity: .75;
+      color: color-mix(in srgb, var(--ink) 62%, var(--neutral));
       margin-top: 12px;
       line-height: 1.4;
     }
@@ -207,7 +234,7 @@
       justify-content: space-between;
       gap: 10px;
       flex-wrap: wrap;
-      opacity: .85;
+      color: color-mix(in srgb, var(--ink) 72%, var(--neutral));
       font-size: 13px;
     }
 
@@ -215,7 +242,7 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: rgba(5,56,107,.55);
+      background: var(--btn);
       display:inline-block;
       margin-right: 8px;
       position: relative;
@@ -235,7 +262,16 @@
 
   <main class="card" role="main">
     <section class="top">
-      <div class="avatar" aria-hidden="true">IS</div>
+      <div class="avatar" id="avatar" aria-label="Foto de perfil de Instagram">
+        <img
+          id="avatarImg"
+          src="/assets/avatar.jpg"
+          alt="Foto de perfil de Instagram de decusangelicum"
+          loading="eager"
+          referrerpolicy="no-referrer"
+        />
+        <span class="avatarFallback" aria-hidden="true">IS</span>
+      </div>
       <div>
         <h1>
           <button class="nameBtn" id="nameBtn" type="button" aria-label="Cambiar tagline">
@@ -298,6 +334,34 @@
   <script>
     // Year
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Instagram avatar served locally, versioned by assets/avatar-meta.json
+    const avatar = document.getElementById("avatar");
+    const avatarImg = document.getElementById("avatarImg");
+
+    async function loadAvatarVersion() {
+      try {
+        const res = await fetch("/assets/avatar-meta.json", { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const meta = await res.json();
+        const v = meta?.avatarVersion ? `?v=${meta.avatarVersion}` : "";
+        avatarImg.src = `/assets/avatar.jpg${v}`;
+      } catch {
+        avatarImg.src = "/assets/avatar.jpg";
+      }
+    }
+
+    avatarImg.addEventListener("load", () => {
+      avatar.classList.add("hasImage");
+      avatarImg.style.display = "block";
+    });
+
+    avatarImg.addEventListener("error", () => {
+      avatar.classList.remove("hasImage");
+      avatarImg.style.display = "none";
+    });
+
+    loadAvatarVersion();
 
     // Easter egg tagline rotator
     const taglines = [
