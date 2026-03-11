@@ -4,10 +4,6 @@ import { fileURLToPath } from "node:url";
 
 const USERNAME = "decusangelicum";
 const PROFILE_URL = `https://www.instagram.com/${USERNAME}/`;
-const FALLBACK_SOURCES = [
-  `https://unavatar.io/instagram/${USERNAME}`,
-  `https://unavatar.io/${USERNAME}`,
-];
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -80,21 +76,7 @@ async function run() {
     }
 
     if (!imageBuffer || imageBuffer.byteLength < 10_000) {
-      source = "unavatar-fallback";
-      for (const fallbackUrl of FALLBACK_SOURCES) {
-        const res = await fetch(fallbackUrl, { headers });
-        if (!res.ok) continue;
-        const maybeBuffer = Buffer.from(await res.arrayBuffer());
-        if (maybeBuffer.byteLength >= 2_000) {
-          imageBuffer = maybeBuffer;
-          imageUrl = fallbackUrl;
-          break;
-        }
-      }
-    }
-
-    if (!imageBuffer) {
-      throw new Error("No se pudo descargar avatar de Instagram ni fuentes fallback");
+      throw new Error("Instagram bloqueó/limitó la descarga del avatar (sin fallback de logo)");
     }
     const oldBuffer = await readMaybe(AVATAR_FILE);
     const changed = !oldBuffer || !oldBuffer.equals(imageBuffer);

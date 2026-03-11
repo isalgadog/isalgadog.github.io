@@ -265,7 +265,7 @@
       <div class="avatar" id="avatar" aria-label="Foto de perfil de Instagram">
         <img
           id="avatarImg"
-          src="/assets/avatar.jpg"
+          src="assets/avatar.jpg"
           alt="Foto de perfil de Instagram de decusangelicum"
           loading="eager"
           referrerpolicy="no-referrer"
@@ -340,14 +340,20 @@
     const avatarImg = document.getElementById("avatarImg");
 
     async function loadAvatarVersion() {
+      // Local file preview (file://) can't reliably fetch JSON; use direct image path
+      if (location.protocol === "file:") {
+        avatarImg.src = `assets/avatar.jpg?v=${Date.now()}`;
+        return;
+      }
+
       try {
-        const res = await fetch("/assets/avatar-meta.json", { cache: "no-store" });
+        const res = await fetch("assets/avatar-meta.json", { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const meta = await res.json();
         const v = meta?.avatarVersion ? `?v=${meta.avatarVersion}` : "";
-        avatarImg.src = `/assets/avatar.jpg${v}`;
+        avatarImg.src = `assets/avatar.jpg${v}`;
       } catch {
-        avatarImg.src = "/assets/avatar.jpg";
+        avatarImg.src = "assets/avatar.jpg";
       }
     }
 
